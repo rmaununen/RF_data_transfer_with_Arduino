@@ -1,13 +1,17 @@
 #Transmit from here
 import serial
 import time
-serialcom = serial.Serial('/dev/cu.usbserial-1410', 9600, 1) #Change port name to the one you are using
+serialcom = serial.Serial('/dev/cu.usbserial-1410', baudrate=9600, timeout=1) #Change port name to the one you are using
 
-While True:
-    i = int(input('input (1 or 0): ').strip())
-    if i == 2:
+
+inn = '110101301010100102'
+for i in inn:
+    if i == "2":
+        serialcom.write("0".encode())
         print("finished")
         break
-    serialcom.write(i.encode())
-    print(serialcom.readline().decode('ascii'))
+    serialcom.write((i + '\n').encode())
+    time.sleep(0.01)
+    print(serialcom.readline().decode('ascii')[:-1])
+
 serialcom.close()
