@@ -6,18 +6,18 @@ serialcom = serial.Serial('/dev/cu.usbserial-1420', baudrate=9600, timeout=1) #C
 from Tx_image import create_data
 from Tx_text import create_text
 
-transfer = 'text'
+transfer = 'image'
 if transfer == 'text':
     inn = create_text()
 
 elif transfer == 'image':
-    inn = '11010130101010010'
-    for i in range(100000):
-        inn+='1'
-        inn+='0'
-    inn+='2'
-    inn = create_data()
-
+    inn = create_data() 
+'''
+inn = ''
+for i in range(100000):
+    inn += '1'
+inn+='2'
+'''
 print('\nTRANSFERRING DATA:\n')
 for i in inn:
     if i == "2":
@@ -25,7 +25,7 @@ for i in inn:
         print("finished")
         break
     serialcom.write((i + '\n').encode())
-    time.sleep(0.1)
+    time.sleep(0.001)
     print(serialcom.readline().decode('ascii')[:-1])
 
 serialcom.close()
