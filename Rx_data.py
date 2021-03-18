@@ -1,4 +1,6 @@
 #Receive here
+from matplotlib import pyplot
+from Rx_decoder import *
 import serial
 import time
 #1410 or 1420
@@ -36,3 +38,41 @@ print(data[3])
 
 print('\n', received_data)
 print('length of the received array: ', len(received_data))
+
+#Do averaging for every n measurements! Where n is a number of measurements per bit.
+#Then convert every averaged value to 1 or 0:
+
+def bit_reader(data, n):
+    a = 0
+    data_out = []
+    bit = []
+    for i in data:
+        if a < n:
+            bit.append(i)
+            a += 1
+        elif a == n:
+            data_out.append(bit)
+            bit = []
+            a = 0
+    print(data_out)
+    avg = sum(data_out)/len(data_out)
+    bit_data = []
+    for d in data_out:
+        if d > avg:
+            bit_data.append(1)
+        else:
+            bit_data.append(0)
+    case = 'undefined'
+    return bit_data, case
+
+#DECODE RECEIVED DATA
+bit_data, case = bit_reader(data, 5)
+if case == 'text':
+    decoded = text_decode(bit_data)
+    print(decoded)
+elif case == 'image':
+    decoded = image_decode(bit_data)
+    pyplot.imshow(decoded)
+    pyplot.show()
+else:
+    print('Error: undefined transfer case')
